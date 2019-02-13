@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList} from "react-native";
-import Comentario from "./Comentario";
+import Comment from "./Comment";
+import CommentInput from "./CommentInput";
 
 export default class Post extends Component {
     constructor(props) {
@@ -48,27 +49,25 @@ export default class Post extends Component {
             return;
         }
 
-        return (<Comentario comentario={{login: loginUsuario, texto: comentario}}/>);
+        return (<Comment comentario={{login: loginUsuario, texto: comentario}}/>);
     }
 
-    addComment() {
-        if (this.state.commentText.trim() === '') {
+    addComment(commentText) {
+        if (commentText.trim() === '') {
             return;
         }
 
         const comments = this.state.foto.comentarios.concat({
-            id: this.state.commentText,
+            id: commentText,
             login: 'meuUsuario',
-            texto: this.state.commentText
+            texto: commentText
         });
         this.setState({
             foto: {
                 ...this.state.foto,
                 comentarios: comments
-            },
-            commentText: ''
+            }
         });
-        this.commentInput.clear();
     }
 
     render() {
@@ -91,19 +90,9 @@ export default class Post extends Component {
 
                     <FlatList data={foto.comentarios}
                               keyExtractor={comentario => comentario.id.toString()}
-                              renderItem={({item}) => <Comentario comentario={item} />} />
+                              renderItem={({item}) => <Comment comentario={item} />} />
 
-                    <View style={styles.newComment}>
-                        <TextInput placeholder="Adicione um comentário"
-                                   style={styles.input}
-                                   ref={input => this.commentInput = input}
-                                   onChangeText={text => this.setState({commentText: text})} />
-
-                        <TouchableOpacity onPress={this.addComment.bind(this)}>
-                            <Image style={styles.sendIcon}
-                                   source={require('../../resources/img/send.png')} />
-                        </TouchableOpacity>
-                    </View>
+                    <CommentInput addComment={this.addComment.bind(this)} />
                 </View>
             </View>
         );
@@ -136,19 +125,5 @@ const styles = StyleSheet.create({
     },
     boldStyle: {
         fontWeight: 'bold'
-    },
-    newComment: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd'
-    },
-    input: {
-        flexGrow: 1,
-        height: 40
-    },
-    sendIcon: {
-        width: 30,
-        height: 30
     }
 });
