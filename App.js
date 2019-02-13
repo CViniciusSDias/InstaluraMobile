@@ -19,8 +19,19 @@ export default class App extends Component {
     };
   }
 
-  like(fotoId) {
+  _atualizaFotosCom(fotoAtualizada) {
+    const fotos = this.state.fotos.map(foto => foto.id === fotoAtualizada.id ? fotoAtualizada : foto);
+
+    this.setState({fotos});
+  }
+
+  _buscaFotoPorId(fotoId) {
     const foto = this.state.fotos.find(foto => foto.id === fotoId);
+    return foto;
+  }
+
+  like(fotoId) {
+    const foto = this._buscaFotoPorId(fotoId);
 
     const likerList = foto.likeada
         ? foto.likers.filter(liker => liker.login !== 'meuUsuario')
@@ -32,9 +43,7 @@ export default class App extends Component {
       likers: likerList
     };
 
-    const fotos = this.state.fotos.map(foto => foto.id === fotoAtualizada.id ? fotoAtualizada : foto);
-
-    this.setState({fotos});
+    this._atualizaFotosCom(fotoAtualizada);
   }
 
   addComment(fotoId, commentText) {
@@ -42,7 +51,7 @@ export default class App extends Component {
       return;
     }
 
-    const foto = this.state.fotos.find(foto => foto.id === fotoId);
+    const foto = this._buscaFotoPorId(fotoId);
 
     const comments = foto.comentarios.concat({
       id: commentText,
@@ -53,9 +62,7 @@ export default class App extends Component {
       ...foto,
       comentarios: comments
     };
-    const fotos = this.state.fotos.map(foto => foto.id === fotoAtualizada.id ? fotoAtualizada : foto);
-
-    this.setState({fotos});
+    this._atualizaFotosCom(fotoAtualizada);
   }
 
   componentDidMount() {
