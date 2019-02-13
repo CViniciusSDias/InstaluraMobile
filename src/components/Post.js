@@ -90,7 +90,7 @@ export default class Post extends Component {
                     {this.showCaption(foto.comentario, foto.loginUsuario)}
 
                     <FlatList data={foto.comentarios}
-                              keyExtractor={comentario => comentario.id}
+                              keyExtractor={comentario => comentario.id.toString()}
                               renderItem={({item}) => <Comentario comentario={item} />} />
 
                     <View style={styles.newComment}>
