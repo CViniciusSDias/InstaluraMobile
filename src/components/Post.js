@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Dimensions, Image, StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList} from "react-native";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
+import Likes from "./Likes";
 
 export default class Post extends Component {
     constructor(props) {
@@ -24,24 +25,6 @@ export default class Post extends Component {
         };
 
         this.setState({foto: fotoAtualizada});
-    }
-
-    showLikes(likers) {
-        if (likers.length <= 0) {
-            return;
-        }
-
-        return (
-            <Text style={styles.boldStyle}>
-                {likers.length} {likers.length > 1 ? 'curtidas' : 'curtida'}
-            </Text>
-        );
-    }
-
-    get likeIcon() {
-        return this.state.foto.likeada
-            ? require('../../resources/img/s2-checked.png')
-            : require('../../resources/img/s2.png');
     }
 
     showCaption(comentario, loginUsuario) {
@@ -81,11 +64,8 @@ export default class Post extends Component {
                 <Image style={styles.image} source={{uri: foto.urlFoto}} />
 
                 <View style={styles.footer}>
-                    <TouchableOpacity style={styles.likeButton} onPress={this.like.bind(this)}>
-                        <Image style={styles.likeButton} source={this.likeIcon} />
-                    </TouchableOpacity>
+                    <Likes foto={foto} like={this.like.bind(this)} />
 
-                    {this.showLikes(foto.likers)}
                     {this.showCaption(foto.comentario, foto.loginUsuario)}
 
                     <FlatList data={foto.comentarios}
@@ -115,10 +95,6 @@ const styles = StyleSheet.create({
     image: {
         width: screenWidth,
         height: screenWidth
-    },
-    likeButton: {
-        width: 30,
-        height: 30
     },
     footer: {
         margin: 10
