@@ -18,7 +18,8 @@ export default class CommentInput extends Component {
                            onChangeText={text => this.setState({commentText: text})} />
 
                 <TouchableOpacity onPress={() => {
-                    this.props.addComment(this.state.commentText);
+                    this.props.addComment(this.props.fotoId, this.state.commentText);
+                    this.setState({commentText: ''});
                     this.commentInput.clear();
                 }}>
                     <Image style={styles.sendIcon}

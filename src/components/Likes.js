@@ -39,4 +39,7 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30
     },
+    boldStyle: {
+        fontWeight: 'bold'
+    }
 });

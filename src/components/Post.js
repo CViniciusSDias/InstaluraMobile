@@ -8,71 +8,32 @@ export default class Post extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            foto: this.props.foto,
-            commentText: ''
+            foto: this.props.foto
         };
-    }
-
-    like() {
-        const likerList = this.state.foto.likeada
-            ? this.state.foto.likers.filter(liker => liker.login !== 'meuUsuario')
-            : this.state.foto.likers.concat({login: 'meuUsuario'});
-
-        const fotoAtualizada = {
-            ...this.state.foto,
-            likeada: !this.state.foto.likeada,
-            likers: likerList
-        };
-
-        this.setState({foto: fotoAtualizada});
-    }
-
-    showCaption(comentario, loginUsuario) {
-        if (!comentario) {
-            return;
-        }
-
-        return (<Comment comentario={{login: loginUsuario, texto: comentario}}/>);
-    }
-
-    addComment(commentText) {
-        if (commentText.trim() === '') {
-            return;
-        }
-
-        const comments = this.state.foto.comentarios.concat({
-            id: commentText,
-            login: 'meuUsuario',
-            texto: commentText
-        });
-        this.setState({
-            foto: {
-                ...this.state.foto,
-                comentarios: comments
-            }
-        });
     }
 
     render() {
-        const { foto } = this.state;
+        const { foto, like, addComment } = this.props;
         return (
             <View>
                 <View style={styles.header}>
                     <Image source={{uri: foto.urlPerfil}} style={styles.profilePicture} />
                     <Text>{foto.loginUsuario}</Text>
                 </View>
+
                 <Image style={styles.image} source={{uri: foto.urlFoto}} />
 
                 <View style={styles.footer}>
-                    <Likes foto={foto} like={this.like.bind(this)} />
+                    <Likes foto={foto} like={() => like(foto.id)} />
 
-                    {this.showCaption(foto.comentario, foto.loginUsuario)}
+                    {foto.comentario.length > 0 && (<Comment comentario={{login: foto.loginUsuario, texto: foto.comentario}} />)}
+
 
                     <FlatList data={foto.comentarios}
                               keyExtractor={comentario => comentario.id.toString()}
                               renderItem={({item}) => <Comment comentario={item} />} />
 
-                    <CommentInput addComment={this.addComment.bind(this)} />
+                    <CommentInput addComment={addComment} fotoId={foto.id} />
                 </View>
             </View>
         );
@@ -98,8 +59,5 @@ const styles = StyleSheet.create({
     },
     footer: {
         margin: 10
-    },
-    boldStyle: {
-        fontWeight: 'bold'
     }
 });
